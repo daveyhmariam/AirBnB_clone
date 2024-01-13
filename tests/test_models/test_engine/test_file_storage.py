@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-'''The above class is a unit test for the FileStorage class, testing its methods such as all(), new(),
+'''The above class is a unit test for the FileStorage
+class, testing its methods such as all(), new(),
 save(), and reload().'''
 import unittest
 import json
@@ -8,41 +9,44 @@ from models.base_model import BaseModel
 
 
 class Test_FileStorage(unittest.TestCase):
-    '''The `Test_FileStorage` class is a unit test class that tests the functionality of the `FileStorage`
+    '''The `Test_FileStorage` class is a unit test class
+    that tests the functionality of the `FileStorage`
     class.'''
 
     @classmethod
     def setUpClass(cls):
         """
-        The setUpClass function initializes a FileStorage object and a BaseModel object as class
+        The setUpClass function initializes a FileStorage
+        object and a BaseModel object as class
         attributes.
         """
         cls.storage1 = FileStorage()
         cls.model1 = BaseModel()
-    
+
     def test_all(self):
         """
-        The function `test_all` checks if the model object `self.model1` is equal to the value stored in
-        the `self.storage1` dictionary with the key `key`, and also checks if the type of
-        `self.storage1.all()` is a dictionary.
+        checks whether the return is dict or not
         """
         key = BaseModel.__name__ + "." + self.model1.id
 
         self.assertEqual(self.model1, self.storage1.all()[key])
         self.assertEqual(type(self.storage1.all()), dict)
-    
+
     def test_new(self):
         """
-        The function tests if the model1 object is equal to the value stored in the storage1 dictionary
-        using the key generated from the BaseModel class name and the id of model1.
+        The function tests if the model1 object is
+        equal to the value stored in the storage1 dictionary
+        using the key generated from the BaseModel class name
+        and the id of model1.
         """
         key = BaseModel.__name__ + "." + self.model1.id
 
         self.assertEqual(self.model1, self.storage1.all()[key])
-    
+
     def file_read(self, file_path):
         """
-        The function reads the contents of a file and returns them as a string, or returns None if the
+        The function reads the contents of a file and
+        returns them as a string, or returns None if the
         file is not found.
         """
         try:
@@ -53,7 +57,8 @@ class Test_FileStorage(unittest.TestCase):
 
     def test_save(self):
         """
-        The function `test_save` saves data from `self.storage1` to a JSON file and compares the JSON
+        The function `test_save` saves data from `self.storage1`
+        to a JSON file and compares the JSON
         string with the content of the file.
         """
         data = {}
@@ -68,15 +73,15 @@ class Test_FileStorage(unittest.TestCase):
 
     def test_reload(self):
         """
-        The function `test_reload` creates a new instance of the `BaseModel` class, retrieves it from
-        storage, and compares its dictionary representation with the original instance.
+        checks if the instances are correctly loaded from the file
         """
         model2 = BaseModel()
         key = BaseModel.__name__ + "." + model2.id
-        
+
         self.storage1.reload()
         obj_rep = self.storage1.all()[key]
-        self.assertEqual(model2.to_dict(),obj_rep.to_dict())
+        self.assertEqual(model2.to_dict(), obj_rep.to_dict())
+
 
 if __name__ == "__main__":
     unittest.loader()
