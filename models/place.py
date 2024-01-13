@@ -1,11 +1,11 @@
-'''The `Place` class is a subclass of `BaseModel` and represents a place with various'''
+'''The `Place` class is a subclass of `BaseModel`
+and represents a place with various'''
 from models.base_model import BaseModel
 
 
 class Place(BaseModel):
-    '''# The `Place` class is a subclass of `BaseModel` and represents a place with various attributes such
-    as city ID, user ID, name, description, number of rooms, number of bathrooms, maximum number of
-    guests, price per night, latitude, longitude, and a list of amenity IDs.'''
+    '''# The `Place` class is a subclass of `BaseModel`
+    and represents a place with various attributes'''
     city_id = ""
     user_id = ""
     name = ""
@@ -20,7 +20,7 @@ class Place(BaseModel):
 
     def __init__(self, *args, **kwargs):
         """
-        The above function is the constructor method for a class, which calls the constructor of its
-        parent class.
+        The above function is the constructor method for a class,
+        which calls the constructor of its parent class.
         """
         super().__init__(*args, **kwargs)

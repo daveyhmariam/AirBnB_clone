@@ -108,7 +108,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, arg):
         """
-        The function `do_update` updates the attribute value of an instance of a class based on the
+        The function `do_update` updates the attribute
+        value of an instance of a class based on the
         provided arguments.
         """
         if arg:
@@ -143,7 +144,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_count(self, arg):
         """
-        The function `do_count` counts the number of values in `storage` that have a specific type name
+        The function `do_count` counts the number of
+        values in `storage` that have a specific type name
         specified by the `arg` parameter.
         """
         count = 0
@@ -153,12 +155,14 @@ class HBNBCommand(cmd.Cmd):
         print(count)
         return
 
-    def default(self, arg):     
+    def default(self, arg):
         """
-        The function splits a string into words using a delimiter and then rearranges the words in a
-        specific order before passing them as a command to another function.
+        The function splits a string into words
+        using a delimiter and then rearranges the words in a
+        specific order before passing them
+        as a command to another function.
         """
-        # remamber to handle ininite loop  
+        # remember to handle ininite loop
         delimeter = r'[.,(){}:\'" ]+'
         args = re.split(delimeter, arg)
         result = ""
@@ -177,6 +181,7 @@ class HBNBCommand(cmd.Cmd):
             self.onecmd(result)
         else:
             super().default(arg)
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
