@@ -10,6 +10,7 @@ from models.base_model import BaseModel
 class Test_FileStorage(unittest.TestCase):
     '''The `Test_FileStorage` class is a unit test class that tests the functionality of the `FileStorage`
     class.'''
+
     @classmethod
     def setUpClass(cls):
         """
@@ -20,12 +21,21 @@ class Test_FileStorage(unittest.TestCase):
         cls.model1 = BaseModel()
     
     def test_all(self):
+        """
+        The function `test_all` checks if the model object `self.model1` is equal to the value stored in
+        the `self.storage1` dictionary with the key `key`, and also checks if the type of
+        `self.storage1.all()` is a dictionary.
+        """
         key = BaseModel.__name__ + "." + self.model1.id
 
         self.assertEqual(self.model1, self.storage1.all()[key])
         self.assertEqual(type(self.storage1.all()), dict)
     
     def test_new(self):
+        """
+        The function tests if the model1 object is equal to the value stored in the storage1 dictionary
+        using the key generated from the BaseModel class name and the id of model1.
+        """
         key = BaseModel.__name__ + "." + self.model1.id
 
         self.assertEqual(self.model1, self.storage1.all()[key])
@@ -42,6 +52,10 @@ class Test_FileStorage(unittest.TestCase):
             pass
 
     def test_save(self):
+        """
+        The function `test_save` saves data from `self.storage1` to a JSON file and compares the JSON
+        string with the content of the file.
+        """
         data = {}
         for key, value in self.storage1.all().items():
             data[key] = value.to_dict()
@@ -53,6 +67,10 @@ class Test_FileStorage(unittest.TestCase):
         self.assertEqual(json_string, file_string)
 
     def test_reload(self):
+        """
+        The function `test_reload` creates a new instance of the `BaseModel` class, retrieves it from
+        storage, and compares its dictionary representation with the original instance.
+        """
         model2 = BaseModel()
         key = BaseModel.__name__ + "." + model2.id
         

@@ -13,6 +13,8 @@ from models.state import State
 
 
 class HBNBCommand(cmd.Cmd):
+    '''The `HBNBCommand` class is a command-line interface
+    for managing objects in a storage system.'''
     prompt = "(hbnb) "
 
     def do_quit(self, arg):
@@ -24,9 +26,16 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def emptyline(self):
+        """
+        The function "emptyline" does nothing and serves as a placeholder.
+        """
         pass
 
     def do_create(self, arg):
+        """
+        The function `do_create` creates an object of a
+        specified class, prints its ID, and saves it.
+        """
         if arg:
             try:
                 obj = globals()[arg]()
@@ -39,6 +48,9 @@ class HBNBCommand(cmd.Cmd):
         return
 
     def do_show(self, arg):
+        """
+        The function `do_show` takes an argument and checks if it
+        """
         if arg:
             class_name = arg.split(" ")[0]
             key = arg.replace(' ', '.')
@@ -56,6 +68,11 @@ class HBNBCommand(cmd.Cmd):
         return
 
     def do_destroy(self, arg):
+        """
+        The function `do_destroy` takes an argument `arg`
+        and checks if it is a valid class name and
+        instance ID, and if so, deletes the instance from storage.
+        """
         if arg:
             class_name = arg.split(" ")[0]
             key = arg.replace(' ', '.')
@@ -74,6 +91,11 @@ class HBNBCommand(cmd.Cmd):
         return
 
     def do_all(self, arg):
+        """
+        The function `do_all` prints all objects in
+        the storage that match the given argument, or all
+        objects if no argument is provided.
+        """
         if arg and arg not in globals().keys():
             print("** class doesn't exist **")
         else:
@@ -85,6 +107,10 @@ class HBNBCommand(cmd.Cmd):
         return
 
     def do_update(self, arg):
+        """
+        The function `do_update` updates the attribute value of an instance of a class based on the
+        provided arguments.
+        """
         if arg:
             value = arg.split(" ")
             class_name = value[0]
@@ -116,6 +142,10 @@ class HBNBCommand(cmd.Cmd):
         return
 
     def do_count(self, arg):
+        """
+        The function `do_count` counts the number of values in `storage` that have a specific type name
+        specified by the `arg` parameter.
+        """
         count = 0
         for value in storage.all().values():
             if type(value).__name__ == arg:
@@ -124,24 +154,29 @@ class HBNBCommand(cmd.Cmd):
         return
 
     def default(self, arg):     
-            # remamber to handle ininite loop  
-            delimeter = r'[.,(){}:\'" ]+'
-            args = re.split(delimeter, arg)
-            result = ""
+        """
+        The function splits a string into words using a delimiter and then rearranges the words in a
+        specific order before passing them as a command to another function.
+        """
+        # remamber to handle ininite loop  
+        delimeter = r'[.,(){}:\'" ]+'
+        args = re.split(delimeter, arg)
+        result = ""
 
-            if args[-1] == "":
-                args.pop()
+        if args[-1] == "":
+            args.pop()
 
-            if len(args) > 1:
-                result = args[1] + " " + args[0]
+        if len(args) > 1:
+            result = args[1] + " " + args[0]
 
-            if len(args) > 2:
-                for i in range(2, len(args)):
-                    result += " " + args[i]
-            if result:
-                self.onecmd(result)
-            else:
-                super().default(arg)
+        if len(args) > 2:
+            for i in range(2, len(args)):
+                result += " " + args[i]
+
+        if result:
+            self.onecmd(result)
+        else:
+            super().default(arg)
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
