@@ -125,7 +125,7 @@ class HBNBCommand(cmd.Cmd):
 
     def default(self, arg):     
             # remamber to handle ininite loop  
-            delimeter = r'[.,(){}: ]+'
+            delimeter = r'[.,(){}:\'" ]+'
             args = re.split(delimeter, arg)
             result = ""
 
