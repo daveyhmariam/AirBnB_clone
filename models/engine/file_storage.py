@@ -1,59 +1,49 @@
-'''class that handles object storage'''
+#!/usr/bin/python3
+"""
+File storage engine for obects to persist data
+
+"""
 import json
 from models.base_model import BaseModel
-from models.user import User
-from models.amenity import Amenity
-from models.city import City
-from models.place import Place
-from models.review import Review
-from models.state import State
 
 
 class FileStorage:
-    '''The FileStorage class provides methods
-    for managing and persisting objects in a file.'''
+   """class FileStorage that serializes instances to a JSON file
+       and deserializes JSON file to instances
+   """
+   __file_path = "objects.json"
+   __objects = {}
 
-    __file_path = "file.json"
-    __objects = {}
+   def all(self):
+      """returns the dictionary __objects
+      """
+      return (self.__class__.__objects)
+   
+   def new(self, obj):
+      """sets in __objects the obj with key <obj class name>.id
 
-    def all(self):
-        """
-        The function returns all objects of the same
-        type as the calling object.
-        """
-        return type(self).__objects
+      Args:
+          obj (instance object):
+      """
+      obj_name = obj.__class__.__name__ + "." + str(obj.id)
+      self.__class__.__objects[obj_name] = obj
+      
+   def save(self):
+      """serializes __objects to the JSON file (path: __file_path)
+      """
+      with open(self.__class__.__file_path, "w") as file_data:
+         json_dict = {}
+         for o in self.__class__.__objects:
+            json_dict[o] = self.__class__.__objects[o].to_dict()
+         json.dump(json_dict, file_data, indent=4)
 
-    def new(self, obj):
-        """
-        The function "new" adds an object to a dictionary
-        with a key generated from the object's type
-        name and id.
-        """
-        key = "{}.{}".format(type(obj).__name__, obj.id)
-        FileStorage.__objects[key] = obj
-
-    def save(self):
-        """
-        The `save` function saves the objects of a class
-        to a file in JSON format.
-        """
-        data = {}
-
-        for key, value in type(self).__objects.items():
-            data[key] = value.to_dict()
-        with open(self.__file_path, "w") as f:
-            json.dump(data, f, indent=2)
-
-    def reload(self):
-        """
-        The `reload` function reads data from a file
-        and creates objects based on the data.
-        """
-        try:
-            with open(type(self).__file_path, "r") as f:
-                data = json.load(f)
-                for key, value in data.items():
-                    type(self).__objects[key] = globals()[
-                        value["__class__"]](**value)
-        except FileNotFoundError:
+   def reload(self):
+         try:
+            with open(self.__class__.__file_path, "r") as file_data:
+               json_dict = json.load(file_data)
+               for v in json_dict.values():
+                  cls_name = v["__class__"]
+                  del v["__class__"]
+                  self.new(eval(cls_name)(**v))      
+         except FileNotFoundError:
             pass

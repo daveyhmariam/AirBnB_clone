@@ -1,187 +1,139 @@
 #!/usr/bin/python3
-'''command interpreter entry for object interaction'''
+"""the entry point of the command interpreter"""
+
 import cmd
-import re
-from models import storage
 from models.base_model import BaseModel
-from models.user import User
-from models.amenity import Amenity
-from models.city import City
-from models.place import Place
-from models.review import Review
-from models.state import State
+from models import storage
 
 
 class HBNBCommand(cmd.Cmd):
-    '''The `HBNBCommand` class is a command-line interface
-    for managing objects in a storage system.'''
-    prompt = "(hbnb) "
+    """inheris the cmd.Cmd class
+    """
 
-    def do_quit(self, arg):
-        '''exit the command interpreter'''
+    def __init__(self):
+        super().__init__()
+        self.prompt = "(hbnb) "
+
+    def do_quit(self, line):
+        """exits the command line"""
         return True
 
-    def do_EOF(self, arg):
-        '''exit the command interpreter by using control-D'''
+    def do_EOF(self, line):
+        """exits the command line"""
         return True
 
     def emptyline(self):
-        """
-        The function "emptyline" does nothing and serves as a placeholder.
-        """
+        """EOF signal to exit the program."""
         pass
 
-    def do_create(self, arg):
+    def do_create(self, line):
+        """Creates a new instance of BaseModel,
+           saves it (to the JSON file) and prints the id
         """
-        The function `do_create` creates an object of a
-        specified class, prints its ID, and saves it.
-        """
-        if arg:
+        if not line:
+            print("** class name missing **")
+            return
+        else:
             try:
-                obj = globals()[arg]()
+                obj = eval(line)()
                 print(obj.id)
                 obj.save()
-            except KeyError:
+                return
+            except (NameError, KeyError):
                 print("** class doesn't exist **")
-        else:
-            print("** class name missing **")
         return
 
-    def do_show(self, arg):
+    def do_show(self, line):
+        """"Prints the string representation of
+            an instance based on the class name and id
         """
-        The function `do_show` takes an argument and checks if it
-        """
-        if arg:
-            class_name = arg.split(" ")[0]
-            key = arg.replace(' ', '.')
-
-            if class_name not in globals().keys():
+        if line:
+            cls_name = line.split(" ")[0]
+            if len(line.split(" ")[0]) > 1:
+                key = line.replace(" ", ".")
+            if cls_name not in globals().keys():
                 print("** class doesn't exist **")
-            elif len(arg.split(" ")) == 1:
+                return
+            if len(line.split(" ")) == 1:
                 print("** instance id missing **")
-            elif key not in storage.all().keys():
+                return
+            if key not in storage.all().keys():
                 print("** no instance found **")
+                return
             else:
                 print(storage.all()[key])
         else:
             print("** class name missing **")
         return
 
-    def do_destroy(self, arg):
-        """
-        The function `do_destroy` takes an argument `arg`
-        and checks if it is a valid class name and
-        instance ID, and if so, deletes the instance from storage.
-        """
-        if arg:
-            class_name = arg.split(" ")[0]
-            key = arg.replace(' ', '.')
-
-            if class_name not in globals().keys():
+    def do_destroy(self, line):
+        """Deletes an instance based on the class name and id"""
+        if line:
+            cls_name = line.split(" ")[0]
+            if len(line.split(" ")[0]) > 1:
+                key = line.replace(" ", ".")
+            if cls_name not in globals().keys():
                 print("** class doesn't exist **")
-            elif len(arg.split(" ")) == 1:
+                return
+            if len(line.split(" ")) == 1:
                 print("** instance id missing **")
-            elif key not in storage.all().keys():
+                return
+            if key not in storage.all().keys():
                 print("** no instance found **")
+                return
             else:
                 del storage.all()[key]
                 storage.save()
         else:
             print("** class name missing **")
-        return
+            return
 
-    def do_all(self, arg):
+    def do_all(self, line):
+        """Prints all string representation of all
+        instances based or not on the class name.
         """
-        The function `do_all` prints all objects in
-        the storage that match the given argument, or all
-        objects if no argument is provided.
-        """
-        if arg and arg not in globals().keys():
+        if line and line not in globals().keys():
             print("** class doesn't exist **")
         else:
-            if arg == "":
+            if line is None or line == "":
                 print([str(value) for value in storage.all().values()])
             else:
                 print([str(value) for value in storage.all().values()
-                       if type(value).__name__ == arg])
+                       if line == type(value).__name__])
         return
 
-    def do_update(self, arg):
-        """
-        The function `do_update` updates the attribute
-        value of an instance of a class based on the
-        provided arguments.
-        """
-        if arg:
-            value = arg.split(" ")
-            class_name = value[0]
-            key = value[0] + "."
-
-            if class_name not in globals().keys():
-                print("** class doesn't exist **")
-            elif len(arg.split(" ")) == 1:
-                print("** instance id missing **")
-            elif key + value[1] not in storage.all().keys():
-                print("** no instance found **")
-            elif len(arg.split(" ")) == 2:
-                print("* attribute name missing **")
-            elif len(arg.split(" ")) == 3:
+    def do_update(self, line):
+        """Updates an instance based on the class name and id by adding or updating
+           attribute (save the change into the JSON file)"""
+        if not line or line == "":
+            print("** class name missing **")
+            return
+        else:
+            if len(line.split(" ")) == 1:
+                if line not in globals().keys():
+                    print("** class doesn't exist **")
+                    return
+                else:
+                    print("** instance id missing **")
+                    return
+            elif len(line.split(" ")) == 2:
+                if line.replace(" ", ".") not in storage.all().keys():
+                    print("** no instance found **")
+                    return
+                else:
+                    print("** attribute name missing **")
+                    return
+            elif len(line.split(" ")) == 3:
                 print("** value missing **")
             else:
-                key += value[1]
-                if re.match(r'\d+$', value[3]):
-                    attributeValue = int(value[3])
-                elif re.match(r'\d+\.\d+', value[3]):
-                    attributeValue = float(value[3])
-                else:
-                    attributeValue = value[3]
+                arg_list = line.split(" ")
+                key = arg_list[0] + "." + arg_list[1]
+                name = arg_list[2]
+                value = arg_list[3]
+                value = type(storage.all()[key].to_dict()[name])(value)
+                obj = storage.all()[key]
+                setattr(obj, name, value)
+                
 
-                setattr(storage.all()[key], value[2], attributeValue)
-                storage.save()
-        else:
-            print("** class name missing **")
-        return
-
-    def do_count(self, arg):
-        """
-        The function `do_count` counts the number of
-        values in `storage` that have a specific type name
-        specified by the `arg` parameter.
-        """
-        count = 0
-        for value in storage.all().values():
-            if type(value).__name__ == arg:
-                count += 1
-        print(count)
-        return
-
-    def default(self, arg):
-        """
-        The function splits a string into words
-        using a delimiter and then rearranges the words in a
-        specific order before passing them
-        as a command to another function.
-        """
-        # remember to handle ininite loop
-        delimeter = r'[.,(){}:\'" ]+'
-        args = re.split(delimeter, arg)
-        result = ""
-
-        if args[-1] == "":
-            args.pop()
-
-        if len(args) > 1:
-            result = args[1] + " " + args[0]
-
-        if len(args) > 2:
-            for i in range(2, len(args)):
-                result += " " + args[i]
-
-        if result:
-            self.onecmd(result)
-        else:
-            super().default(arg)
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     HBNBCommand().cmdloop()

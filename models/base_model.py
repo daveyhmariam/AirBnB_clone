@@ -1,59 +1,58 @@
-'''base model for the model objects'''
-import uuid
-import datetime
+#!/usr/bin/python3
+"""defines all common attributes/methods for other classes:
+
+"""
+from datetime import datetime
 import models
+import uuid
 
 
-class BaseModel:
-    '''The `BaseModel` class is a base class that
-    provides common functionality for other classes, such as
-    initializing attributes, saving changes, and
-    converting attributes to a dictionary representation.'''
-
+class BaseModel():
+    """Base class for models
+    """
+    name = "dave"
     def __init__(self, *args, **kwargs):
-        """
-        The function initializes an object and sets
-        its attributes based on the provided keyword
-        arguments.
+        """ Initializes object creation
+            set instance attributes from kwargs if kwargs is not None
+            otherwise creat attributes
+        args:
+            args (list, tuple): an iterable of positional args
+            kwargs (ditionary): a dictionary of keyword args
+
         """
         if kwargs != {}:
-            for key, value in kwargs.items():
-                if key == "created_at" or key == "updated_at":
-                    setattr(self, key, datetime.datetime.fromisoformat(value))
-                elif key != "__class__":
-                    setattr(self, key, value)
+            for k, v in kwargs.items():
+                if k != "__class__":
+                    if k == "created_at" or k == "updated_at":
+                        date_obj = datetime.strptime(v, "%Y-%m-%dT%H:%M:%S.%f")
+                        setattr(self, k, date_obj)
+                    else:
+                        setattr(self, k, v)
         else:
             self.id = str(uuid.uuid4())
-            self.created_at = datetime.datetime.now()
-            self.updated_at = datetime.datetime.now()
+            self.created_at = datetime.now()
+            self.updated_at = self.created_at
             models.storage.new(self)
-
+    
     def __str__(self):
+        """the string representation of objects
         """
-        The __str__ function returns a string representation
-        of an object, including its class name, id,
-        and attributes.
-        """
-        return "[{}] ({}) {}".format(type(self).__name__,
-                                     self.id, self.__dict__)
-
+        class_name = self.__class__.__name__
+        return f"[{class_name}] ({self.id}) {self.__dict__}"
+    
     def save(self):
+        """Public instance method to register the update time
         """
-        The function updates the "updated_at" attribute
-        of an object and saves the changes to the
-        storage.
-        """
-        self.updated_at = datetime.datetime.now()
+        self.updated_at = datetime.now()
         models.storage.save()
-
+        
     def to_dict(self):
+        """returns a dictionary containing all keys/values of __dict__ of the instance
+        Return: dictionary
         """
-        The function `to_dict` converts an object's attributes
-        into a dictionary, including the object's class name
-        and the ISO formatted creation and update timestamps.
-        """
-        dic = self.__dict__.copy()
-        dic["__class__"] = type(self).__name__
-        dic["created_at"] = self.created_at.isoformat()
-        dic["updated_at"] = self.updated_at.isoformat()
-        return dic
+        instance_dictionary = self.__dict__.copy()
+        class_name = self.__class__.__name__
+        instance_dictionary.update({"__class__": class_name})
+        instance_dictionary["created_at"] = self.created_at.strftime("%Y-%m-%dT%H:%M:%S.%f")
+        instance_dictionary["updated_at"] = self.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%f")
+        return instance_dictionary
