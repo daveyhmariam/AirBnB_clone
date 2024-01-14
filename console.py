@@ -17,8 +17,8 @@ class HBNBCommand(cmd.Cmd):
     def do_EOF(self, line):
         """exits the command line"""
         return True
-    def emptyline(self, line) -> bool:
-        return super().emptyline()
+    def emptyline(self):
+        pass
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
