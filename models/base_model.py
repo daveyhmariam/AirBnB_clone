@@ -16,9 +16,17 @@ class BaseModel:
         its attributes based on the provided keyword
         arguments.
         """
-        self.id = uuid.uuid4()
-        self.created_at = datetime.datetime.now()
-        self.updated_at = datetime.datetime.now()
+        if kwargs != {}:
+            del kwargs["__class__"]
+            for k, v in kwargs.items():
+                if k == "created_at" or k == "updated_at":
+                    setattr(self, k, datetime.datetime.fromisoformat(v))
+                else:
+                    setattr(self, k, v)
+        else:
+            self.id = uuid.uuid4()
+            self.created_at = datetime.datetime.now()
+            self.updated_at = datetime.datetime.now()
 
     def save(self):
         """update the public instance attribute updated_at
