@@ -16,42 +16,26 @@ class BaseModel:
         its attributes based on the provided keyword
         arguments.
         """
-        if kwargs != {}:
-            for key, value in kwargs.items():
-                if key == "created_at" or key == "updated_at":
-                    setattr(self, key, datetime.datetime.fromisoformat(value))
-                elif key != "__class__":
-                    setattr(self, key, value)
-        else:
-            self.id = str(uuid.uuid4())
-            self.created_at = datetime.datetime.now()
-            self.updated_at = datetime.datetime.now()
-            models.storage.new(self)
-
-    def __str__(self):
-        """
-        The __str__ function returns a string representation
-        of an object, including its class name, id,
-        and attributes.
-        """
-        return "[{}] ({}) {}".format(type(self).__name__,
-                                     self.id, self.__dict__)
+        self.id = uuid.uuid4()
+        self.created_at = datetime.datetime.now()
+        self.updated_at = datetime.datetime.now()
 
     def save(self):
-        """
-        The function updates the "updated_at" attribute
-        of an object and saves the changes to the
-        storage.
+        """update the public instance attribute updated_at
         """
         self.updated_at = datetime.datetime.now()
-        models.storage.save()
 
     def to_dict(self):
+        """returns a dictionary containing all keys/values of __dict__ of the instance
         """
-        The function `to_dict` converts an object's attributes
-        into a dictionary, including the object's class name
-        and the ISO formatted creation and update timestamps.
+        self.__dict__["__class__"] = str(type(self).__name__)
+        self.__dict__["created_at"] = self.__dict__["created_at"].isoformat()
+        self.__dict__["updated_at"] = self.__dict__["updated_at"].isoformat()
+        return self.__dict__.copy()
+
+    def __str__(self):
+        """Human readable String representation of instance
+        Return:
+            str:
         """
-        dic = self.__dict__.copy()
-        dic["__class__"] = type(self).__name__
-        dic["created_at"] = self.created_at.isoformat()
+        return f"[{str(type(self).__name__)}] ({self.id}) {self.__dict__}"
