@@ -1,13 +1,6 @@
 '''class that handles object storage'''
 import json
-from models.base_model import BaseModel
-from models.user import User
-from models.amenity import Amenity
-from models.city import City
-from models.place import Place
-from models.review import Review
-from models.state import State
-
+from models import base_model
 
 class FileStorage:
     '''The FileStorage class provides methods
@@ -17,43 +10,38 @@ class FileStorage:
     __objects = {}
 
     def all(self):
-        """
-        The function returns all objects of the same
-        type as the calling object.
+        """Returns all objects
         """
         return type(self).__objects
 
     def new(self, obj):
+        """sets in __objects the obj with key <obj class name>.id
+
+        Args:
+            obj (class_instance): instance of a certain class
+                particularly BaseModel or descendants
         """
-        The function "new" adds an object to a dictionary
-        with a key generated from the object's type
-        name and id.
-        """
-        key = "{}.{}".format(type(obj).__name__, obj.id)
-        FileStorage.__objects[key] = obj
+        if obj != None:
+            key = obj.__dict__[__class__] + str(obj.id)
+            type(self).__objects[key] = obj
 
     def save(self):
+        """serializes __objects to the JSON file (path: __file_path)
         """
-        The `save` function saves the objects of a class
-        to a file in JSON format.
-        """
-        data = {}
-
-        for key, value in type(self).__objects.items():
-            data[key] = value.to_dict()
-        with open(self.__file_path, "w") as f:
-            json.dump(data, f, indent=2)
+        try:
+            with open(type(self).__file_path, "w") as f:
+                json.dump(type(self).__objects, f)
+        except Exception as e:
+            pass
 
     def reload(self):
-        """
-        The `reload` function reads data from a file
-        and creates objects based on the data.
+        """deserializes the JSON file to __objects
+            (only if the JSON file (__file_path) exists
+            otherwise, do nothing. If the file doesn’t exist,
+            no exception should be raised)
         """
         try:
             with open(type(self).__file_path, "r") as f:
-                data = json.load(f)
-                for key, value in data.items():
-                    type(self).__objects[key] = globals()[
-                        value["__class__"]](**value)
-        except FileNotFoundError:
+                type(self).__objects = json.load(f)
+        except Exception as e:
             pass

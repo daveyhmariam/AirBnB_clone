@@ -3,7 +3,6 @@ import uuid
 import datetime
 import models
 
-
 class BaseModel:
     '''The `BaseModel` class is a base class that
     provides common functionality for other classes, such as
