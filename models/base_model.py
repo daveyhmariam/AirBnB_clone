@@ -23,22 +23,26 @@ class BaseModel:
                 else:
                     setattr(self, k, v)
         else:
-            self.id = uuid.uuid4()
+            self.id = str(uuid.uuid4())
             self.created_at = datetime.datetime.now()
             self.updated_at = datetime.datetime.now()
+            models.storage.new(self)
 
     def save(self):
         """update the public instance attribute updated_at
         """
         self.updated_at = datetime.datetime.now()
+        models.storage.save()
 
     def to_dict(self):
         """returns a dictionary containing all keys/values of __dict__ of the instance
         """
-        self.__dict__["__class__"] = str(type(self).__name__)
-        self.__dict__["created_at"] = self.__dict__["created_at"].isoformat()
-        self.__dict__["updated_at"] = self.__dict__["updated_at"].isoformat()
-        return self.__dict__.copy()
+        dic = self.__dict__.copy()
+        dic["__class__"] = str(type(self).__name__)
+        dic["created_at"] = self.__dict__["created_at"].isoformat()
+        dic["updated_at"] = self.__dict__["updated_at"].isoformat()
+        return dic
+        
 
     def __str__(self):
         """Human readable String representation of instance
