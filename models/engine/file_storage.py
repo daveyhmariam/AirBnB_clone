@@ -1,50 +1,45 @@
-"""class that handles object storage"""
+#!/usr/bin/python3
+"""Storage engine to store objects into files
+"""
 import json
-from models.base_model import BaseModel
+
 
 class FileStorage:
-    '''The FileStorage class provides methods
-    for managing and persisting objects in a file.'''
-
-    __file_path = "file.json"
+    """serializes instances to a JSON file
+        and deserializes JSON file to instances:
+    """
     __objects = {}
+    __file_path = "../../file.json"
 
     def all(self):
-        """Returns all objects
+        """return all stored obejcts
+        Returns:
+            dictionary: returns __objects
         """
-        return dict(type(self).__objects)
+        return (type(self).__objects)
 
     def new(self, obj):
-        """sets in __objects the obj with key <obj class name>.id
+        """adds new object
 
         Args:
-            obj (class_instance): instance of a certain class
-                particularly BaseModel or descendants
+            obj (instance of class):
         """
-        key = "{}.{}".format(type(self).__name__, obj.id)
-        type(self).__objects[key] = obj
+        if obj is not None:
+            key = str(type(self).__name__) + str(obj.id)
+            type(self).__objects[key] = obj
 
     def save(self):
         """serializes __objects to the JSON file (path: __file_path)
         """
-        data = {}
-        
-        for k, v in type(self).__objects.items():
-            data[k] = v.to_dict()
-
-        with open(type(self).__file_path, "w") as f:
-            json.dump(data, f, indent = 2)
+        with open(type(self).__file, "w") as file:
+            json.dump(type(self).__objects, file)
 
     def reload(self):
         """deserializes the JSON file to __objects
-            (only if the JSON file (__file_path) exists
-            otherwise, do nothing. If the file doesn’t exist,
-            no exception should be raised)
+           (only if the JSON file (__file_path) exists
         """
         try:
-            with open(type(self).__file_path, "r") as f:
-                dic = json.load(f)
-                for k, v in dic.items():
-                    type(self).__objects[k] = globals()[v["__class__"]](**v)
+            with open(type(self), "r") as file:
+                type(self).__objects = json.load(file)
         except FileNotFoundError:
-            pass
+            return ({})
