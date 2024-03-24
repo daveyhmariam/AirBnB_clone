@@ -1,61 +1,18 @@
 {
-  "BaseModel.646f07f2-e74f-4b8b-9476-d9c4cc714789": {
-    "id": "646f07f2-e74f-4b8b-9476-d9c4cc714789",
-    "created_at": "2024-01-12T17:26:23.382887",
-    "updated_at": "2024-01-12T17:26:23.383391",
+  "FileStorage.d5f5987f-96f9-420d-9e39-5b565ebbbdf0": {
+    "id": "d5f5987f-96f9-420d-9e39-5b565ebbbdf0",
+    "created_at": "2024-01-27T15:51:14.384511",
+    "updated_at": "2024-01-27T15:51:14.384539",
     "name": "My_First_Model",
     "my_number": 89,
     "__class__": "BaseModel"
   },
-  "BaseModel.a6953717-1253-46cf-989c-eae1a644fec8": {
-    "id": "a6953717-1253-46cf-989c-eae1a644fec8",
-    "created_at": "2024-01-12T17:26:25.236963",
-    "updated_at": "2024-01-12T17:26:25.237684",
+  "FileStorage.60208665-a4d3-457b-b0c7-21f14d2298d9": {
+    "id": "60208665-a4d3-457b-b0c7-21f14d2298d9",
+    "created_at": "2024-01-27T15:51:17.691747",
+    "updated_at": "2024-01-27T15:51:17.691763",
     "name": "My_First_Model",
     "my_number": 89,
     "__class__": "BaseModel"
-  },
-  "State.01e5bd1c-0083-4e26-aaad-390b470d6c07": {
-    "id": "01e5bd1c-0083-4e26-aaad-390b470d6c07",
-    "created_at": "2024-01-12T19:17:43.280184",
-    "updated_at": "2024-01-12T19:17:43.280378",
-    "__class__": "State"
-  },
-  "Place.c71bfd01-0d7f-4e7b-8447-1cc571a6a3d8": {
-    "id": "c71bfd01-0d7f-4e7b-8447-1cc571a6a3d8",
-    "created_at": "2024-01-12T19:17:58.035102",
-    "updated_at": "2024-01-12T19:17:58.035202",
-    "__class__": "Place"
-  },
-  "City.3508c078-8f4d-45d1-b0ee-bab368ef82fa": {
-    "id": "3508c078-8f4d-45d1-b0ee-bab368ef82fa",
-    "created_at": "2024-01-12T19:18:05.360376",
-    "updated_at": "2024-01-12T19:18:05.360474",
-    "__class__": "City"
-  },
-  "Amenity.08d50214-0ec3-45ec-89a6-95fd6bd72f1a": {
-    "id": "08d50214-0ec3-45ec-89a6-95fd6bd72f1a",
-    "created_at": "2024-01-12T19:18:11.452408",
-    "updated_at": "2024-01-12T19:18:11.452479",
-    "__class__": "Amenity"
-  },
-  "Review.ccced6fc-b73b-415e-ba95-3a0ee579aad0": {
-    "id": "ccced6fc-b73b-415e-ba95-3a0ee579aad0",
-    "created_at": "2024-01-12T19:18:17.610492",
-    "updated_at": "2024-01-12T19:18:17.610565",
-    "__class__": "Review"
-  },
-  "BaseModel.37f5fed7-af6b-46ba-a7d3-a248311b1faa": {
-    "id": "37f5fed7-af6b-46ba-a7d3-a248311b1faa",
-    "created_at": "2024-01-13T16:11:18.636237",
-    "updated_at": "2024-01-13T16:11:18.636263",
-    "__class__": "BaseModel"
-  },
-  "User.a57a5cc0-c0f8-4496-8122-ba076b0207b8": {
-    "id": "a57a5cc0-c0f8-4496-8122-ba076b0207b8",
-    "created_at": "2024-01-13T19:20:34.517689",
-    "updated_at": "2024-01-13T19:20:34.517768",
-    "first_name": "John",
-    "__class__": "User"
   }
 }
