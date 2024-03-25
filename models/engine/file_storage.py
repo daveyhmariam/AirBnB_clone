@@ -2,6 +2,7 @@
 """Storage engine to store objects into files
 """
 import json
+from models.base_model import BaseModel
 
 
 class FileStorage:
@@ -9,7 +10,7 @@ class FileStorage:
         and deserializes JSON file to instances:
     """
     __objects = {}
-    __file_path = "../../file.json"
+    __file_path = "file.json"
 
     def all(self):
         """return all stored obejcts
@@ -25,21 +26,29 @@ class FileStorage:
             obj (instance of class):
         """
         if obj is not None:
-            key = str(type(self).__name__) + str(obj.id)
+            key = str(type(obj).__name__) + "." + str(obj.id)
             type(self).__objects[key] = obj
 
     def save(self):
         """serializes __objects to the JSON file (path: __file_path)
         """
-        with open(type(self).__file, "w") as file:
-            json.dump(type(self).__objects, file)
+        dict = {}
+
+        for key, value in type(self).__objects.items():
+            dict[key] = value.to_dict()
+        with open(type(self).__file_path, "w") as file:
+            json.dump(dict, file, indent=4)
 
     def reload(self):
-        """deserializes the JSON file to __objects
-           (only if the JSON file (__file_path) exists
+        """
+        The `reload` function reads data from a file
+        and creates objects based on the data.
         """
         try:
-            with open(type(self), "r") as file:
-                type(self).__objects = json.load(file)
-        except FileNotFoundError:
-            return ({})
+            with open(type(self).__file_path, "r") as f:
+                data = json.load(f)
+                for key, value in data.items():
+                    type(self).__objects[key] = globals()[
+                        value["__class__"]](**value)
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            pass

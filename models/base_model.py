@@ -3,6 +3,7 @@ import uuid
 import datetime
 import models
 
+
 class BaseModel:
     '''The `BaseModel` class is a base class that
     provides common functionality for other classes, such as
@@ -35,14 +36,14 @@ class BaseModel:
         models.storage.save()
 
     def to_dict(self):
-        """returns a dictionary containing all keys/values of __dict__ of the instance
+        """returns a dictionary containing all
+            keys/values of __dict__ of the instance
         """
         dic = self.__dict__.copy()
         dic["__class__"] = str(type(self).__name__)
         dic["created_at"] = self.__dict__["created_at"].isoformat()
         dic["updated_at"] = self.__dict__["updated_at"].isoformat()
         return dic
-        
 
     def __str__(self):
         """Human readable String representation of instance
