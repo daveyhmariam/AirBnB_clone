@@ -17,5 +17,4 @@ class HBNBCommand(cmd.Cmd):
         """
         return True
 if __name__ == "__main__":
-    new_cmd = HBNBCommand()
-    HBNBCommand.cmdloop()
+    HBNBCommand().cmdloop()
