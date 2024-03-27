@@ -4,17 +4,16 @@ import cmd
 
 
 class HBNBCommand(cmd.Cmd):
-    """program called console.py that contains
-        the entry point of the command interpreter
-    """
+    '''The `HBNBCommand` class is a command-line interface
+    for managing objects in a storage system.'''
     prompt = "(hbnb) "
+
     def do_quit(self, arg):
-        """Exit the program
-        """
+        '''exit the command interpreter'''
         return True
+
     def do_EOF(self, arg):
-        """exit the program
-        """
+        '''exit the command interpreter by using control-D'''
         return True
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
