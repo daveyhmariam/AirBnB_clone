@@ -1,19 +1,18 @@
 '''user module'''
 from models.base_model import BaseModel
 
-
 class User(BaseModel):
-    '''The class defines a User model with attributes
-    for email, password, first name, and last name.'''
+    """class User that inherits from BaseModel
+
+    Args:
+        BaseModel (Class):
+    """
     email = ""
     password = ""
     first_name = ""
     last_name = ""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *arg, **kwargs):
+        """Constructor method of the sub class user
         """
-        The above function is the constructor method
-        for a class, which calls the constructor of the
-        parent class.
-        """
-        super().__init__(*args, **kwargs)
+        super().__init__(*arg, **kwargs)
