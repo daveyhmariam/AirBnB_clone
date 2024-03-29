@@ -1,9 +1,14 @@
 #!/usr/bin/python3
 """command interpreter entry for object interaction"""
 
+from models.amenity import Amenity
 from models.base_model import BaseModel
+from models.city import City
 import cmd
 from models import storage
+from models.place import Place
+from models.review import Review
+from models.state import State
 from models.user import User
 
 
@@ -12,7 +17,12 @@ class HBNBCommand(cmd.Cmd):
         the entry point of the command interpreter
     """
     prompt = "(hbnb) "
-    __classes = ["BaseModel",
+    __classes = ["Amenity",
+                 "BaseModel",
+                 "City",
+                 "Place",
+                 "Review",
+                 "State",
                  "User"]
 
     def do_quit(self, arg):
@@ -144,7 +154,7 @@ class HBNBCommand(cmd.Cmd):
             return False
         if "{}.{}".format(argp[0], argp[1]) not in objects.keys():
             print("** no instance found **")
-            return False 
+            return False
         if len(argp) == 2:
             print("** attribute name missing **")
             return False
@@ -161,6 +171,7 @@ class HBNBCommand(cmd.Cmd):
                 obj.__dict__[argp[2]] = argp[3]
 
         storage.save()
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
