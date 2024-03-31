@@ -5,10 +5,11 @@ from models.amenity import Amenity
 from models.base_model import BaseModel
 from models.city import City
 import cmd
-from models import storage
 from models.place import Place
+import re
 from models.review import Review
 from models.state import State
+from models import storage
 from models.user import User
 
 
@@ -172,6 +173,53 @@ class HBNBCommand(cmd.Cmd):
 
         storage.save()
 
+    def default(self, arg: str):
+        """The function splits a string into words
+        using a delimiter and then rearranges the words in a
+        specific order before passing them
+        as a command to another function.
+        Args:
+            line (str):
+        """
+        command = ["all", "create", "show",
+                   "destroy", "update", "count"]
+        reobj = re.compile(r'[.,(){}:\'" ]+')
+        argp = reobj.split(arg)
+        result = ""
+        if argp[-1] == "":
+            argp.pop()
+        if len(argp) > 1:
+            if argp[1] in command:
+                result = argp[1] + " " + argp[0]
+                if result:
+                    self.onecmd(result)
+            else:
+                print("*** Unknown syntax: {}".format(arg))
+                return False
+
+    def do_count(self, arg):
+        """Update to command interpreter to retrieve
+            the number of instances of a class: <class name>.count().
+
+        Args:
+            arg (str): command line value specifying class name
+        """
+
+        argp = arg.split()
+        
+        if not arg:
+            print("** class name missing **")
+            return False
+
+        if argp[0] not in type(self).__classes:
+            print("** class doesn't exist **")
+            return False
+        instances = 0
+        objects = storage.all()
+        for k in objects.keys():
+            if argp[0] in k.split("."):
+                instances += 1
+        print(instances)
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
