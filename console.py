@@ -191,6 +191,8 @@ class HBNBCommand(cmd.Cmd):
         if len(argp) > 1:
             if argp[1] in command:
                 result = argp[1] + " " + argp[0]
+                for count in range(2, len(argp)):
+                    result += " " + argp[count]
                 if result:
                     self.onecmd(result)
             else:
