@@ -6,6 +6,7 @@ from models.base_model import BaseModel
 from models.city import City
 import cmd
 from models.place import Place
+import json
 import re
 from models.review import Review
 from models.state import State
@@ -142,7 +143,7 @@ class HBNBCommand(cmd.Cmd):
             arg (str): <class name> <id> <attribute name> "<attribute value>"
         """
         objects = storage.all()
-        argp = arg.split()
+        argp = arg.split(" ", 2)
 
         if len(argp) == 0:
             print("** class name missing **")
@@ -154,15 +155,16 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return False
         if "{}.{}".format(argp[0], argp[1]) not in objects.keys():
+            print("{}.{}".format(argp[0], argp[1]))
             print("** no instance found **")
             return False
         if len(argp) == 2:
             print("** attribute name missing **")
             return False
         if len(argp) == 3:
-            print("** value missing **")
-            return False
-        print(len(argp))
+            if type(eval(argp[2])) != dict:
+                print("** value missing **")
+                return False
         if len(argp) == 4:
             obj = objects["{}.{}".format(argp[0], argp[1])]
             if argp[2] in obj.__class__.__dict__.keys():
@@ -170,35 +172,62 @@ class HBNBCommand(cmd.Cmd):
                 obj.__dic__[argp[2]] = valtype(argp[3])
             else:
                 obj.__dict__[argp[2]] = argp[3]
+        else:
+            obj = objects["{}.{}".format(argp[0], argp[1])]
+            argp[2] = argp[2].replace("'", '"')
+            argp[2] = json.loads(str(argp[2]))
+
+            for k, v in argp[2].items():
+                if (k in obj.__class__.__dict__.keys() and
+                        type(obj.__class__.__dict__[k]) in {str, int, float}):
+                    valtype = type(obj.__class__.__dict__[k])
+                    obj.__dict__[k] = valtype(v)
+                else:
+                    obj.__dict__[k] = v
+
 
         storage.save()
 
     def default(self, arg: str):
-        """The function splits a string into words
-        using a delimiter and then rearranges the words in a
-        specific order before passing them
-        as a command to another function.
-        Args:
-            line (str):
         """
-        command = ["all", "create", "show",
-                   "destroy", "update", "count"]
-        reobj = re.compile(r'[.,(){}:\'" ]+')
-        argp = reobj.split(arg)
-        result = ""
-        if argp[-1] == "":
-            argp.pop()
-        if len(argp) > 1:
-            if argp[1] in command:
-                result = argp[1] + " " + argp[0]
-                for count in range(2, len(argp)):
-                    result += " " + argp[count]
-                if result:
-                    self.onecmd(result)
-            else:
-                print("*** Unknown syntax: {}".format(arg))
-                return False
+        The function splits a string into words using a delimiter and then rearranges the words in a specific order before passing them as a command to another function.
 
+        Args:
+            arg (str): The input string representing a command.
+        """
+
+        command_keywords = ["all", "create", "show", "destroy", "update", "count"]
+
+        arg_keyword_match = re.search(r"[a-zA-Z.]+\(", arg)
+        if arg_keyword_match:
+            arg_keyword = arg_keyword_match.group()
+        else:
+            arg_keyword = None
+        arg_keyword = arg_keyword.replace("(", "")
+        arg_keyword = arg_keyword.split(".")[1] + " " + arg_keyword.split(".")[0]
+        id_match = re.search(r"\w{8}-\w{4}-\w{4}-\w{4}-\w{12}", arg)
+        if id_match:
+            id_value = id_match.group()
+        else:
+            id_value = None
+
+        para_match = re.search(r"\{[^{}]+\}", arg)
+        if para_match:
+            para_value = para_match.group()
+            para_value = para_value.replace("'", "\"")
+        else:
+            para_value = None
+
+        rearranged_command = ""
+        if arg_keyword:
+            rearranged_command += arg_keyword
+        if id_value:
+            rearranged_command += " " + id_value
+        if para_value:
+            rearranged_command += " " + para_value
+
+        if (rearranged_command):
+            self.onecmd(rearranged_command)
     def do_count(self, arg):
         """Update to command interpreter to retrieve
             the number of instances of a class: <class name>.count().
